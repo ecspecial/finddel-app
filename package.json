@@ -1,22 +1,39 @@
 {
   "name": "finddel-app",
-  "version": "1.0.0",
+  "version": "3.0.0",
+  "build": 1,
   "main": "index.ts",
   "dependencies": {
     "expo": "~56.0.8",
+    "expo-constants": "~56.0.16",
+    "expo-linear-gradient": "~56.0.4",
+    "expo-linking": "~56.0.13",
+    "expo-splash-screen": "~56.0.0",
     "expo-status-bar": "~56.0.4",
     "react": "19.2.3",
-    "react-native": "0.85.3"
+    "react-native": "0.85.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
+    "react-native-webview": "13.16.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "~19.2.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild:android": "npx expo prebuild --platform android --clean",
+    "prebuild:ios": "npx expo prebuild --platform ios --clean",
+    "sync:android-icons": "npx expo prebuild --platform android --no-install && node scripts/patch-android-splash.mjs",
+    "build:apk": "node scripts/patch-android-splash.mjs && cd android && gradlew.bat assembleRelease",
+    "build:aab": "node scripts/patch-android-splash.mjs && cd android && gradlew.bat bundleRelease",
+    "build:android-apk": "npm run prebuild:android && npm run build:apk",
+    "build:android-aab": "npm run prebuild:android && npm run build:aab",
+    "gen:logo": "node scripts/gen-loading-logo.mjs",
+    "gen:splash": "node scripts/gen-splash-logo.mjs"
   },
   "private": true
 }

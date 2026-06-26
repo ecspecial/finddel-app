@@ -1,20 +1,32 @@
+import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+
+import { LOADING_GRADIENT } from './src/config';
+import { WebShell } from './src/components/WebShell';
+
+void SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	useEffect(() => {
+		const frame = requestAnimationFrame(() => {
+			void SplashScreen.hideAsync().catch(() => {});
+		});
+		return () => cancelAnimationFrame(frame);
+	}, []);
+
+	return (
+		<View style={styles.root}>
+			<WebShell />
+			<StatusBar style="light" />
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+	root: {
+		flex: 1,
+		backgroundColor: LOADING_GRADIENT.colors[0],
+	},
 });
