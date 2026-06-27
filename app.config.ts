@@ -49,9 +49,6 @@ const config = {
 		},
 	},
 	extra: {
-		eas: {
-			projectId: 'cd72cd73-af11-4bb9-b054-7673cd2d2fcd',
-		},
 		siteUrl: process.env.EXPO_PUBLIC_SITE_URL ?? 'https://finddel.ru',
 	},
 };

@@ -9,7 +9,7 @@ import {
 	View,
 } from 'react-native';
 import { WebView, type WebViewNavigation } from 'react-native-webview';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as LinkingExpo from 'expo-linking';
 
 import { APP_SCHEME, SITE_URL } from '../config';
@@ -23,10 +23,20 @@ import { openExternalUrl, shouldOpenExternally } from '../utils/webNavigation';
 import { LoadingScreen } from './LoadingScreen';
 
 const APP_USER_AGENT_SUFFIX = ' FinddelApp/3.0';
-const APP_BOOTSTRAP_JS = 'window.__FINDDEL_APP__=true;true;';
+
+function buildAppBootstrapJs(topInset: number, bottomInset: number): string {
+	return `
+window.__FINDDEL_APP__=true;
+document.documentElement.classList.add('finddel-app');
+document.documentElement.style.setProperty('--finddel-safe-top', '${topInset}px');
+document.documentElement.style.setProperty('--finddel-safe-bottom', '${bottomInset}px');
+true;
+`;
+}
 
 export function WebShell() {
 	const webViewRef = useRef<WebView>(null);
+	const insets = useSafeAreaInsets();
 	const splashDismissed = useRef(false);
 	const [showSplash, setShowSplash] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -119,6 +129,10 @@ export function WebShell() {
 		return () => subscription.remove();
 	}, []);
 
+	useEffect(() => {
+		webViewRef.current?.injectJavaScript(buildAppBootstrapJs(insets.top, insets.bottom));
+	}, [insets.top, insets.bottom]);
+
 	const renderWebError = useCallback(
 		() => (
 			<View style={styles.errorOverlay}>
@@ -134,12 +148,12 @@ export function WebShell() {
 	);
 
 	return (
-		<SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+		<View style={[styles.root, { paddingBottom: insets.bottom }]}>
 			<WebView
 				ref={webViewRef}
 				source={{ uri: SITE_URL }}
 				style={styles.webview}
-				injectedJavaScriptBeforeContentLoaded={APP_BOOTSTRAP_JS}
+				injectedJavaScriptBeforeContentLoaded={buildAppBootstrapJs(insets.top, insets.bottom)}
 				onLoadStart={() => {
 					setError(null);
 					if (!splashDismissed.current) {
@@ -196,7 +210,7 @@ export function WebShell() {
 					</View>
 				</View>
 			) : null}
-		</SafeAreaView>
+		</View>
 	);
 }
 

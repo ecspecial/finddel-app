@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { LOADING_GRADIENT } from './src/config';
@@ -17,10 +18,12 @@ export default function App() {
 	}, []);
 
 	return (
-		<View style={styles.root}>
-			<WebShell />
-			<StatusBar style="light" />
-		</View>
+		<SafeAreaProvider>
+			<View style={styles.root}>
+				<WebShell />
+				<StatusBar style="light" />
+			</View>
+		</SafeAreaProvider>
 	);
 }
 
