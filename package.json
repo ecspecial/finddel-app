@@ -1,7 +1,7 @@
 {
   "name": "finddel-app",
   "version": "3.0.0",
-  "build": 1,
+  "build": 2,
   "main": "index.ts",
   "dependencies": {
     "expo": "~54.0.35",
@@ -28,8 +28,8 @@
     "prebuild:android": "npx expo prebuild --platform android --clean",
     "prebuild:ios": "npx expo prebuild --platform ios --clean",
     "sync:android-icons": "npx expo prebuild --platform android --no-install && node scripts/patch-android-splash.mjs",
-    "build:apk": "node scripts/patch-android-splash.mjs && cd android && gradlew.bat assembleRelease",
-    "build:aab": "node scripts/patch-android-splash.mjs && cd android && gradlew.bat bundleRelease",
+    "build:apk": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew assembleRelease",
+    "build:aab": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew bundleRelease",
     "build:android-apk": "npm run prebuild:android && npm run build:apk",
     "build:android-aab": "npm run prebuild:android && npm run build:aab",
     "gen:logo": "node scripts/gen-loading-logo.mjs",
