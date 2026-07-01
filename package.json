@@ -1,39 +1,47 @@
 {
-  "name": "finddel-app",
-  "version": "3.0.0",
-  "build": 2,
-  "main": "index.ts",
-  "dependencies": {
-    "expo": "~54.0.35",
-    "expo-constants": "~18.0.13",
-    "expo-linear-gradient": "~15.0.8",
-    "expo-linking": "~8.0.12",
-    "expo-splash-screen": "~31.0.13",
-    "expo-status-bar": "~3.0.9",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
-    "react-native-safe-area-context": "~5.6.0",
-    "react-native-svg": "15.12.1",
-    "react-native-webview": "13.15.0"
-  },
-  "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
-    "@types/react": "~19.1.0",
-    "typescript": "~5.9.2"
-  },
-  "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "prebuild:android": "npx expo prebuild --platform android --clean",
-    "prebuild:ios": "npx expo prebuild --platform ios --clean",
-    "sync:android-icons": "npx expo prebuild --platform android --no-install && node scripts/patch-android-splash.mjs",
-    "build:apk": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew assembleRelease",
-    "build:aab": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew bundleRelease",
-    "build:android-apk": "npm run prebuild:android && npm run build:apk",
-    "build:android-aab": "npm run prebuild:android && npm run build:aab",
-    "gen:logo": "node scripts/gen-loading-logo.mjs",
-    "gen:splash": "node scripts/gen-splash-logo.mjs"
-  },
-  "private": true
+	"name": "finddel-app",
+	"version": "3.0.0",
+	"build": 2,
+	"main": "index.ts",
+	"dependencies": {
+		"expo": "~54.0.35",
+		"expo-constants": "~18.0.13",
+		"expo-linear-gradient": "~15.0.8",
+		"expo-linking": "~8.0.12",
+		"expo-splash-screen": "~31.0.13",
+		"expo-status-bar": "~3.0.9",
+		"react": "19.1.0",
+		"react-native": "0.81.5",
+		"react-native-safe-area-context": "~5.6.0",
+		"react-native-svg": "15.12.1",
+		"react-native-webview": "13.15.0"
+	},
+	"devDependencies": {
+		"@resvg/resvg-js": "^2.6.2",
+		"@types/react": "~19.1.0",
+		"@typescript-eslint/eslint-plugin": "^8.61.1",
+		"@typescript-eslint/parser": "^8.61.1",
+		"eslint": "^10.5.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.6",
+		"prettier": "^3.8.4",
+		"typescript": "~5.9.2"
+	},
+	"scripts": {
+		"start": "expo start",
+		"format": "prettier --write .",
+		"lint": "eslint . --fix",
+		"android": "expo run:android",
+		"ios": "expo run:ios",
+		"prebuild:android": "npx expo prebuild --platform android --clean",
+		"prebuild:ios": "npx expo prebuild --platform ios --clean",
+		"sync:android-icons": "npx expo prebuild --platform android --no-install && node scripts/patch-android-splash.mjs",
+		"build:apk": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew assembleRelease",
+		"build:aab": "node scripts/patch-android-splash.mjs && node scripts/patch-android-signing.mjs && cd android && ./gradlew bundleRelease",
+		"build:android-apk": "npm run prebuild:android && npm run build:apk",
+		"build:android-aab": "npm run prebuild:android && npm run build:aab",
+		"gen:logo": "node scripts/gen-loading-logo.mjs",
+		"gen:splash": "node scripts/gen-splash-logo.mjs"
+	},
+	"private": true
 }

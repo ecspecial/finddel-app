@@ -1,28 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	AppState,
-	BackHandler,
-	Platform,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native';
-import { WebView, type WebViewNavigation } from 'react-native-webview';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import * as LinkingExpo from 'expo-linking';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AppState, BackHandler, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { WebView, type WebViewNavigation } from 'react-native-webview'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import * as LinkingExpo from 'expo-linking'
 
-import { APP_SCHEME, SITE_URL } from '../config';
+import { APP_SCHEME, SITE_URL } from '../config'
 import {
 	completeOAuthInWebView,
 	isAuthCallbackDeepLink,
 	isOAuthProviderUrl,
 	openOAuthInSystemBrowser,
-} from '../utils/oauth';
-import { openExternalUrl, shouldOpenExternally } from '../utils/webNavigation';
-import { LoadingScreen } from './LoadingScreen';
+} from '../utils/oauth'
+import { openExternalUrl, shouldOpenExternally } from '../utils/webNavigation'
+import { LoadingScreen } from './LoadingScreen'
 
-const APP_USER_AGENT_SUFFIX = ' FinddelApp/3.0';
+const APP_USER_AGENT_SUFFIX = ' FinddelApp/3.0'
 
 function buildAppBootstrapJs(topInset: number, bottomInset: number): string {
 	return `
@@ -31,92 +23,92 @@ document.documentElement.classList.add('finddel-app');
 document.documentElement.style.setProperty('--finddel-safe-top', '${topInset}px');
 document.documentElement.style.setProperty('--finddel-safe-bottom', '${bottomInset}px');
 true;
-`;
+`
 }
 
 export function WebShell() {
-	const webViewRef = useRef<WebView>(null);
-	const insets = useSafeAreaInsets();
-	const splashDismissed = useRef(false);
-	const [showSplash, setShowSplash] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [canGoBack, setCanGoBack] = useState(false);
+	const webViewRef = useRef<WebView>(null)
+	const insets = useSafeAreaInsets()
+	const splashDismissed = useRef(false)
+	const [showSplash, setShowSplash] = useState(true)
+	const [error, setError] = useState<string | null>(null)
+	const [canGoBack, setCanGoBack] = useState(false)
 
 	const handleAuthCallback = useCallback((url: string) => {
-		completeOAuthInWebView(webViewRef.current, url);
-	}, []);
+		completeOAuthInWebView(webViewRef.current, url)
+	}, [])
 
 	const handleNavigation = useCallback(
 		(request: WebViewNavigation) => {
-			const { url } = request;
+			const { url } = request
 
 			if (url.startsWith('chrome-error://')) {
-				setError('Соединение прервано. Проверьте интернет и нажмите «Повторить».');
-				return false;
+				setError('Соединение прервано. Проверьте интернет и нажмите «Повторить».')
+				return false
 			}
 
 			if (isAuthCallbackDeepLink(url)) {
-				handleAuthCallback(url);
-				return false;
+				handleAuthCallback(url)
+				return false
 			}
 
 			if (isOAuthProviderUrl(url)) {
-				void openOAuthInSystemBrowser(url);
-				return false;
+				void openOAuthInSystemBrowser(url)
+				return false
 			}
 
 			if (url.startsWith(`${APP_SCHEME}://`)) {
-				void LinkingExpo.openURL(url);
-				return false;
+				void LinkingExpo.openURL(url)
+				return false
 			}
 
 			if (shouldOpenExternally(url)) {
-				void openExternalUrl(url);
-				return false;
+				void openExternalUrl(url)
+				return false
 			}
 
-			return true;
+			return true
 		},
 		[handleAuthCallback],
-	);
+	)
 
 	const reload = useCallback(() => {
-		setError(null);
-		splashDismissed.current = false;
-		setShowSplash(true);
-		webViewRef.current?.reload();
-	}, []);
+		setError(null)
+		splashDismissed.current = false
+		setShowSplash(true)
+		webViewRef.current?.reload()
+	}, [])
 
 	useEffect(() => {
 		const onDeepLink = ({ url }: { url: string }) => {
 			if (isAuthCallbackDeepLink(url)) {
-				handleAuthCallback(url);
+				handleAuthCallback(url)
 			}
-		};
+		}
 
-		const subscription = LinkingExpo.addEventListener('url', onDeepLink);
-		void LinkingExpo.getInitialURL().then((url) => {
-			if (url && isAuthCallbackDeepLink(url)) onDeepLink({ url });
-		});
+		const subscription = LinkingExpo.addEventListener('url', onDeepLink)
+		void LinkingExpo.getInitialURL().then(url => {
+			if (url && isAuthCallbackDeepLink(url)) onDeepLink({ url })
+		})
 
-		return () => subscription.remove();
-	}, [handleAuthCallback]);
+		return () => subscription.remove()
+	}, [handleAuthCallback])
 
 	useEffect(() => {
-		if (Platform.OS !== 'android') return;
+		if (Platform.OS !== 'android') return
 		const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
 			if (canGoBack && webViewRef.current) {
-				webViewRef.current.goBack();
-				return true;
+				webViewRef.current.goBack()
+				return true
 			}
-			return false;
-		});
-		return () => subscription.remove();
-	}, [canGoBack]);
+			return false
+		})
+		return () => subscription.remove()
+	}, [canGoBack])
 
 	useEffect(() => {
-		const subscription = AppState.addEventListener('change', (nextState) => {
-			if (nextState !== 'active') return;
+		const subscription = AppState.addEventListener('change', nextState => {
+			if (nextState !== 'active') return
 			webViewRef.current?.injectJavaScript(`
 				(function () {
 					if (document.title === 'Webpage not available') {
@@ -124,28 +116,26 @@ export function WebShell() {
 					}
 				})();
 				true;
-			`);
-		});
-		return () => subscription.remove();
-	}, []);
+			`)
+		})
+		return () => subscription.remove()
+	}, [])
 
 	useEffect(() => {
-		webViewRef.current?.injectJavaScript(buildAppBootstrapJs(insets.top, insets.bottom));
-	}, [insets.top, insets.bottom]);
+		webViewRef.current?.injectJavaScript(buildAppBootstrapJs(insets.top, insets.bottom))
+	}, [insets.top, insets.bottom])
 
 	const renderWebError = useCallback(
 		() => (
 			<View style={styles.errorOverlay}>
-				<Text style={styles.errorText}>
-					{error ?? 'Не удалось загрузить страницу. Проверьте интернет.'}
-				</Text>
+				<Text style={styles.errorText}>{error ?? 'Не удалось загрузить страницу. Проверьте интернет.'}</Text>
 				<TouchableOpacity style={styles.retryButton} onPress={reload}>
 					<Text style={styles.retryText}>Повторить</Text>
 				</TouchableOpacity>
 			</View>
 		),
 		[error, reload],
-	);
+	)
 
 	return (
 		<View style={[styles.root, { paddingBottom: insets.bottom }]}>
@@ -155,34 +145,34 @@ export function WebShell() {
 				style={styles.webview}
 				injectedJavaScriptBeforeContentLoaded={buildAppBootstrapJs(insets.top, insets.bottom)}
 				onLoadStart={() => {
-					setError(null);
+					setError(null)
 					if (!splashDismissed.current) {
-						setShowSplash(true);
+						setShowSplash(true)
 					}
 				}}
 				onLoadEnd={() => {
-					splashDismissed.current = true;
-					setShowSplash(false);
+					splashDismissed.current = true
+					setShowSplash(false)
 				}}
 				onError={() => {
-					setShowSplash(false);
-					setError('Не удалось загрузить сайт. Проверьте интернет и попробуйте снова.');
+					setShowSplash(false)
+					setError('Не удалось загрузить сайт. Проверьте интернет и попробуйте снова.')
 				}}
 				onHttpError={() => {
-					setShowSplash(false);
-					setError('Сайт временно недоступен. Попробуйте позже.');
+					setShowSplash(false)
+					setError('Сайт временно недоступен. Попробуйте позже.')
 				}}
 				onRenderProcessGone={() => {
-					reload();
-					return true;
+					reload()
+					return true
 				}}
 				onContentProcessDidTerminate={() => {
-					reload();
+					reload()
 				}}
 				onFileDownload={({ nativeEvent }) => {
-					void openExternalUrl(nativeEvent.downloadUrl);
+					void openExternalUrl(nativeEvent.downloadUrl)
 				}}
-				onNavigationStateChange={(nav) => setCanGoBack(nav.canGoBack)}
+				onNavigationStateChange={nav => setCanGoBack(nav.canGoBack)}
 				onShouldStartLoadWithRequest={handleNavigation}
 				renderError={renderWebError}
 				javaScriptEnabled
@@ -201,7 +191,7 @@ export function WebShell() {
 			{showSplash ? <LoadingScreen /> : null}
 
 			{error ? (
-				<View style={styles.errorOverlay} pointerEvents="box-none">
+				<View style={styles.errorOverlay} pointerEvents='box-none'>
 					<View style={styles.errorCard}>
 						<Text style={styles.errorText}>{error}</Text>
 						<TouchableOpacity style={styles.retryButton} onPress={reload}>
@@ -211,7 +201,7 @@ export function WebShell() {
 				</View>
 			) : null}
 		</View>
-	);
+	)
 }
 
 const styles = StyleSheet.create({
@@ -252,4 +242,4 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '600',
 	},
-});
+})

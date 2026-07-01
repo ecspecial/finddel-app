@@ -1,13 +1,13 @@
-import type { ExpoConfig } from 'expo/config';
+import type { ExpoConfig } from 'expo/config'
 
-const VERSION = '3.0.0';
-const BUILD_NUMBER = '1';
+const VERSION = '3.0.0'
+const BUILD_NUMBER = '2'
 
 /** Solid green only — logo/gradient only in JS LoadingScreen. */
-const SPLASH_BACKGROUND = '#49AE49';
-const APP_DISPLAY_NAME = 'ИщуДоставку';
+const SPLASH_BACKGROUND = '#49AE49'
+const APP_DISPLAY_NAME = 'ИщуДоставку'
 
-const config = {
+const config: ExpoConfig = {
 	name: APP_DISPLAY_NAME,
 	slug: 'Finddel',
 	version: VERSION,
@@ -30,7 +30,7 @@ const config = {
 		bundleIdentifier: 'com.app.finddel',
 		buildNumber: BUILD_NUMBER,
 		appleTeamId: '52R5Y6MTR2',
-		supportsTablet: true,
+		supportsTablet: false,
 		infoPlist: {
 			ITSAppUsesNonExemptEncryption: false,
 			CFBundleDevelopmentRegion: 'ru_RU',
@@ -40,7 +40,6 @@ const config = {
 	},
 	android: {
 		package: 'com.finddel.finddel',
-		label: APP_DISPLAY_NAME,
 		versionCode: Number(BUILD_NUMBER),
 		predictiveBackGestureEnabled: false,
 		adaptiveIcon: {
@@ -51,6 +50,6 @@ const config = {
 	extra: {
 		siteUrl: process.env.EXPO_PUBLIC_SITE_URL ?? 'https://finddel.ru',
 	},
-};
+}
 
-export default config as ExpoConfig;
+export default config

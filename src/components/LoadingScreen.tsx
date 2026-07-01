@@ -1,11 +1,11 @@
-import { StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, View } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 
-import { LOADING_GRADIENT } from '../config';
-import { cssAngleToLinearGradientPoints } from '../utils/gradient';
-import { FinddelLogo } from './FinddelLogo';
+import { LOADING_GRADIENT } from '../config'
+import { cssAngleToLinearGradientPoints } from '../utils/gradient'
+import { FinddelLogo } from './FinddelLogo'
 
-const gradientPoints = cssAngleToLinearGradientPoints(LOADING_GRADIENT.angleDeg);
+const gradientPoints = cssAngleToLinearGradientPoints(LOADING_GRADIENT.angleDeg)
 
 export function LoadingScreen() {
 	return (
@@ -20,7 +20,7 @@ export function LoadingScreen() {
 				<FinddelLogo />
 			</View>
 		</LinearGradient>
-	);
+	)
 }
 
 const styles = StyleSheet.create({
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-});
+})
